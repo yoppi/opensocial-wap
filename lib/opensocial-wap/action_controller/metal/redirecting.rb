@@ -19,7 +19,12 @@ module OpensocialWap
         url_settings = nil
         if (self.class.respond_to? :opensocial_wap_enabled) && (self.class.opensocial_wap_enabled == true)
           if self.class.url_settings
-            url_settings = self.class.url_settings.redirect
+            if self.class.url_settings.kind_of? Proc
+              url_settings = self.class.url_settings.call(self)
+            else
+              url_settings = self.class.url_settings
+            end
+            url_settings = url_settings.redirect
           end
         end
         url_for(url, url_settings)

@@ -107,7 +107,12 @@ module OpensocialWap
         if !url_settings && default_url_settings
           # コントローラで opensocial_wap が呼ばれていれば、url_settings を有効にする.
           # link_to, button_to 系では、:default の設定を使用する.
-          url_settings = default_url_settings.default
+          if default_url_settings.kind_of? Proc
+            url_settings = default_url_settings.call(self)
+          else
+            url_settings = default_url_settings
+          end
+          url_settings = url_settings.default
         end
         url_settings
       end

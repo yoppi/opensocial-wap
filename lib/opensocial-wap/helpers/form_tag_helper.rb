@@ -42,22 +42,6 @@ module OpensocialWap
           html_options["data-remote"] = true if html_options.delete("remote")
         end
       end
-
-      private
-
-      # html_options から Opensocial WAP用オプションを取り出す.
-      def extract_url_settings(html_options)
-        url_settings = nil
-        if html_options
-          url_settings = html_options.delete("url_settings")
-        end
-        if !url_settings && default_url_settings
-          # コントローラで opensocial_wap が呼ばれていれば、url_settings を有効にする.
-          # form_tag 系では、:default の設定を使用する.
-          url_settings = default_url_settings.default
-        end
-        url_settings
-      end
     end
   end
 end
