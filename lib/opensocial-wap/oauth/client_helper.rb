@@ -6,7 +6,7 @@ module OpensocialWap
     class ClientHelper
 
       attr_reader :oauth_helper, :url
-      
+
       # Assuming that API endpoint is 'http://api.example.com/rest/', API URL is generated as follows.
       #
       # OpensocialWap::OAuth::ClientHelper(oauth_helper, 'people', '@me', '@self', :format => 'atom', :fields => 'gender,address')
@@ -14,7 +14,7 @@ module OpensocialWap
       #
       def initialize(oauth_helper, *args)
         @oauth_helper = oauth_helper
-        
+
         # 最後の引数が Hash であれば、クエリパラメータとする.
         query_parameters = {}
         if args.size > 0
@@ -22,9 +22,14 @@ module OpensocialWap
             query_parameters = args.pop
           end
         end
-        
+
         # URLを構築.
-        @url = @oauth_helper.api_endpoint.dup
+        # MobageはSP/FPでendpointが異なるので動的に変更する
+        if @oauth_helper.api_endpoint.kind_of? Proc
+          @url = @oauth_helper.api_endpoint.call(@oauth_helper.instance_variable_get("@request"))
+        else
+          @url = @oauth_helper.api_endpoint.dup
+        end
         @url << '/' if @url[-1] != '/'
         @url << args.join('/')
         unless query_parameters.empty?
