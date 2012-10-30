@@ -14,11 +14,11 @@ module OpensocialWap
       consumer_key    = @consumer_key
       consumer_secret = @consumer_secret
       app_id          = @app_id
-      api_endpoint = proc { |request|
-        if request.mobile?
-          _api_endpoint
-        else
+      api_endpoint = lambda { |request|
+        if request && request.smart_phone?
           _api_endpoint(true)
+        else
+          _api_endpoint
         end
       }
 
@@ -31,7 +31,7 @@ module OpensocialWap
       @config.opensocial_wap.oauth = OpensocialWap::Config::OAuth.configure do
         helper_class OpensocialWap::OAuth::Helpers::MobageHelper
       end
-      @config.opensocial_wap.url = proc { |context|
+      @config.opensocial_wap.url = lambda { |context|
         if context.request.mobile?
           _ = _container_host
           OpensocialWap::Config::Url.configure do
