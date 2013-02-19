@@ -4,7 +4,10 @@ module OpensocialWap
     extend self
 
     API_ENDPOINT_BASE = "app.mbga.jp/api/restful/v1/"
-    CONTAINER_HOST_BASE = "pf.mbga.jp"
+    FP_CONTAINER_HOST = "pf.mbga.jp/%s"
+    SB_FP_CONTAINER_HOST = "sb" + FP_CONTAINER_HOST
+    SP_CONTAINER_HOST = "g%s.sp.pf.mbga.jp"
+    SB_SP_CONTAINER_HOST = "g%s.sb.sp.pf.mbga.jp"
 
     def mobage(config, &block)
       @config = config
@@ -32,8 +35,8 @@ module OpensocialWap
         helper_class OpensocialWap::OAuth::Helpers::MobageHelper
       end
       @config.opensocial_wap.url = lambda { |context|
-        if context.request.mobile?
-          _ = _container_host
+        if context.request.smart_phone?
+          _ = _container_host(true)
           OpensocialWap::Config::Url.configure do
             container_host _
             default        :format => :full
@@ -41,7 +44,7 @@ module OpensocialWap
             public_path    :format => :local
           end
         else
-          _ = _container_host(true)
+          _ = _container_host
           OpensocialWap::Config::Url.configure do
             container_host _
             default        :format => :full
@@ -54,8 +57,11 @@ module OpensocialWap
     end
 
     def _container_host(sp=false)
-      _ = (sp ? "sp.#{CONTAINER_HOST_BASE}" : CONTAINER_HOST_BASE)
-      @sandbox ? "sb.#{_}" : _
+      if @sandbox
+        sp ? SB_SP_CONTAINER_HOST : SB_FP_CONTAINER_HOST
+      else
+        sp ? SP_CONTAINER_HOST : FP_CONTAINER_HOST
+      end
     end
 
     def _api_endpoint(sp=false)
