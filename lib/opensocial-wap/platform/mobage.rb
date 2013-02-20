@@ -5,7 +5,7 @@ module OpensocialWap
 
     API_ENDPOINT_BASE = "app.mbga.jp/api/restful/v1/"
     FP_CONTAINER_HOST = "pf.mbga.jp/%s"
-    SB_FP_CONTAINER_HOST = "sb" + FP_CONTAINER_HOST
+    SB_FP_CONTAINER_HOST = "sb." + FP_CONTAINER_HOST
     SP_CONTAINER_HOST = "g%s.sp.pf.mbga.jp"
     SB_SP_CONTAINER_HOST = "g%s.sb.sp.pf.mbga.jp"
 
